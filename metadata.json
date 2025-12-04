@@ -1,0 +1,5 @@
+{
+  "name": "CloudSpend AI Nexus",
+  "description": "An interactive, multi-cloud financial operations dashboard visualized across three organizational levels. Features synthetic data generation for AWS, Azure, GCP, and OCI, complete with vulnerability tracking and Gemini-powered insights.",
+  "requestFramePermissions": []
+}
