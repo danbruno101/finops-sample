@@ -411,6 +411,13 @@ const App: React.FC = () => {
           />
         </div>
 
+        {/* Trend Row (Moved Up) */}
+        {!selectedAccount && (
+           <div className="grid grid-cols-1 mb-8">
+              <SpendVsForecastChart data={spendVsForecastData} />
+           </div>
+        )}
+
         {/* Breakdown Row */}
         {!selectedAccount && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
@@ -429,12 +436,9 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Trend & Vulnerability Row */}
+        {/* Vulnerability Row */}
         {!selectedAccount && (
           <>
-            <div className="grid grid-cols-1 mb-8">
-               <SpendVsForecastChart data={spendVsForecastData} />
-            </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                <VulnerabilityChart title="Security Risks by Tier" data={vulnChartData} />
                <VulnerabilityChart title="Security Risks by Area (L1)" data={securityByL1Data} />
