@@ -193,6 +193,50 @@ const App: React.FC = () => {
     return monthlyAgg;
   }, [currentViewData]);
 
+  // --- Entity Summaries for AI Context ---
+  const entityContext = useMemo(() => {
+    const summaries: any[] = [];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+
+    data.forEach(l1 => {
+      // L1 Aggregation
+      const l1Accounts: CloudAccount[] = [];
+      l1.children.forEach(l2 => l2.children.forEach(l3 => l1Accounts.push(...l3.accounts)));
+      
+      const l1Monthly = months.map((m, i) => ({
+        month: m,
+        spend: l1Accounts.reduce((acc, curr) => acc + (curr.monthlyData[i]?.spend || 0), 0)
+      }));
+      
+      summaries.push({
+        name: l1.name,
+        type: 'Level 1 (Area)',
+        monthlySpend: l1Monthly,
+        totalSpend: l1Accounts.reduce((sum, a) => sum + a.spend, 0)
+      });
+
+      // L2 Aggregation
+      l1.children.forEach(l2 => {
+        const l2Accounts: CloudAccount[] = [];
+        l2.children.forEach(l3 => l2Accounts.push(...l3.accounts));
+        
+        const l2Monthly = months.map((m, i) => ({
+            month: m,
+            spend: l2Accounts.reduce((acc, curr) => acc + (curr.monthlyData[i]?.spend || 0), 0)
+        }));
+
+        summaries.push({
+            name: l2.name,
+            type: 'Level 2 (Department)',
+            parent: l1.name,
+            monthlySpend: l2Monthly,
+            totalSpend: l2Accounts.reduce((sum, a) => sum + a.spend, 0)
+        });
+      });
+    });
+    return summaries;
+  }, [data]);
+
   const vulnChartData = useMemo(() => {
     const tierData = [0, 1, 2, 3, 4, 5].map(tier => {
       const tierAccounts = currentViewData.accounts.filter(a => a.tier === tier);
@@ -671,7 +715,9 @@ const App: React.FC = () => {
         contextData={{
           currentLevel: getCurrentBreadcrumb(),
           stats,
-          topSpenders
+          topSpenders,
+          monthlyTrends: spendVsForecastData,
+          availableEntities: entityContext
         }}
       />
     </div>
